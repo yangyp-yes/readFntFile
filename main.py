@@ -1,5 +1,19 @@
+import os
+
 import cv2
 import numpy
+
+import sys
+import hashlib
+
+
+# sprite3_json_format =
+
+class Sprite3:
+    def __init__(self):
+        self.isStage = False
+        self.name = "words"
+        self.variables = {}
 
 
 def str2object(line_str):
@@ -32,6 +46,10 @@ def letter2img(letter, fnt, img1):
 
     I[yoffset:yoffset + fntLetter.height, xoffset: xoffset + fntLetter.width] = lettera_img
 
+    # I[22, 22] = [255, 255, 255,0]
+    # op = I[22, 22, 3]
+    # print(op)
+    # cv2.imshow(letter, I)
     return I
 
 
@@ -93,6 +111,7 @@ fnt = Fnt("po_FZLanTinYuanS-EB_GB.fnt")
 
 # print(fnt.lineHeight)
 
+file_md5_map = {}
 
 img = cv2.imread('po_FZLanTinYuanS-EB_GB.png', cv2.IMREAD_UNCHANGED)
 
@@ -100,7 +119,14 @@ result = gen_word_img("word", fnt, img)
 
 cv2.imshow("word", result)
 cv2.imwrite("word.png", result, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+file_name = "word.png"
+with open(file_name, 'rb') as fp:
+    data = fp.read()
+file_md5 = hashlib.md5(data).hexdigest()
+file_md5_map["word"] = file_md5
+os.rename("word.png", file_md5 + ".png")
 
+print(file_md5)
 # char id=97     x=203   y=817   width=62    height=69    xoffset=2     yoffset=45    xadvance=63    page=0 chnl=0 letter="a"
 # char id=98     x=516   y=442   width=68    height=100   xoffset=5     yoffset=13    xadvance=69    page=0 chnl=0 letter="b"
 # char id=99     x=2     y=817   width=67    height=69    xoffset=3     yoffset=44    xadvance=65    page=0 chnl=0 letter="c"
